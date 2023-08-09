@@ -1,0 +1,50 @@
+"use client";
+
+import useConversation from "@/app/hooks/useConversation";
+import { FullConversationType } from "@/app/types";
+import clsx from "clsx";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { MdOutlineGroupAdd } from "react-icons/md";
+import ConversationBox from "./ConversationBox";
+
+interface ConversationListProps {
+  initialItems: FullConversationType[];
+}
+
+const ConversationList: React.FC<ConversationListProps> = ({
+  initialItems,
+}) => {
+  const [items, setItems] = useState(initialItems);
+  const router = useRouter();
+  const { conversationId, isOpen } = useConversation();
+
+  return (
+    <div
+      className={clsx(
+        `w-[20vw] inset-y-0 pb-20 lg:pb-0 lg:left-20 lg:w-80 lg:block overflow-y-scroll border-r border-gray-200 bg-white`,
+        isOpen ? "hidden" : "block w-full left-0"
+      )}
+    >
+      <div className="px-5 flex flex-col">
+        <div className="flex justify-between items-center mb-4 pt-4">
+          <div className="text-2xl font-bold text-neutral-700">Messages</div>
+          <div className=" rounded-full p-2 bg-gray-100 text-gray-700 cursor-pointer hover:opacity-75 transition">
+            <MdOutlineGroupAdd size={20} />
+          </div>
+        </div>
+        <div className="flex flex-col gap-3 ">
+          {items.map((item) => (
+            <ConversationBox
+              key={item.id}
+              data={item}
+              selected={conversationId === item.id}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ConversationList;
